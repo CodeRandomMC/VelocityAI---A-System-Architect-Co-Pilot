@@ -18,6 +18,7 @@ VelocityAI is an intelligent architecture analysis tool that provides instant, s
 
 - **Accelerate Architecture Reviews**: Compress weeks of traditional review cycles into minutes
 - **Scale Expertise**: Get senior-level architectural insights without requiring senior architects
+- **Export & Share Results**: Generate professional PDF reports and documentation for stakeholders
 - **Enable Rapid Iteration**: Fail fast, learn fast, improve fast
 - **Maintain Quality**: Never sacrifice architectural rigor for speed
 
@@ -55,6 +56,7 @@ VelocityAI is an intelligent architecture analysis tool that provides instant, s
 - Real-time analysis feedback with streaming updates
 - Markdown input/output with syntax highlighting
 - Dynamic model selection and provider switching
+- Export controls for generating reports in multiple formats
 
 ### Backend: Dual-Provider Architecture
 
@@ -62,6 +64,15 @@ VelocityAI is an intelligent architecture analysis tool that provides instant, s
 - **LM Studio**: Local model support with flexible host configuration
 - Automatic model detection and connection testing
 - Graceful fallback handling and error recovery
+- Export engine for PDF, HTML, and Markdown report generation
+
+### Export Capabilities
+
+- Professional PDF reports with styled formatting
+- Interactive HTML reports for digital sharing
+- Markdown exports for version control and documentation
+- In-UI previews and downloadable outputs
+- Customizable theming and templating system
 
 ### Core Components Structure
 
@@ -85,6 +96,7 @@ The application follows a **separation of concerns** architecture:
 - **Client Layer** (`llm_clients.py`): AI provider abstractions
 - **Logic Layer** (`core_logic.py`): Analysis algorithms and prompt engineering
 - **UI Layer** (`ui_components.py`): Interface components and styling
+- **Export Layer** (`export_utils.py`): Report generation and formatting
 - **Orchestration Layer** (`main.py`): Application coordination and event handling
 
 ## 🚀 Quick Start

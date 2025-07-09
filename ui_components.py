@@ -69,6 +69,25 @@ CUSTOM_CSS = """
     margin-top: 10px;
 }
 
+.export-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.export-result {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px dashed #dee2e6;
+    border-radius: 5px;
+    background: #ffffff;
+}
+
 footer {
     display: none !important;
 }
@@ -77,6 +96,10 @@ footer {
 @media (max-width: 768px) {
     .gradio-container {
         padding: 10px !important;
+    }
+    
+    .export-section {
+        flex-direction: column;
     }
 }
 """
@@ -97,6 +120,30 @@ class UIComponents:
             gr.Markdown("Enter your system architecture plan in Markdown. The AI will analyze it for scalability, reliability, security, and more.")
         return header
     
+    def create_export_section(self) -> Tuple[gr.Row, gr.Dropdown, gr.Button, gr.HTML]:
+        """Create export controls section."""
+        with gr.Row(elem_classes="export-section") as export_row:
+            export_format = gr.Dropdown(
+                choices=["PDF", "HTML", "Markdown"],
+                value="PDF",
+                label="🗃️ Export Format",
+                info="Choose the format for exporting your analysis"
+            )
+            
+            export_button = gr.Button(
+                "📥 Export Analysis", 
+                variant="secondary"
+            )
+            
+        # Create a container for export previews/results
+        export_result = gr.HTML(
+            value="",
+            label="Export Preview",
+            visible=False
+        )
+            
+        return export_row, export_format, export_button, export_result
+        
     def create_provider_selector(self) -> gr.Radio:
         """Create the provider selection radio buttons."""
         return gr.Radio(
@@ -167,14 +214,20 @@ class UIComponents:
         
         return input_markdown, submit_button
     
-    def create_output_section(self) -> gr.Markdown:
+    def create_output_section(self) -> Tuple[gr.Markdown, gr.Row, gr.Dropdown, gr.Button, gr.HTML]:
         """Create the output section for displaying results."""
         gr.Markdown("## 📊 Analysis Results")
-        return gr.Markdown(
+        
+        analysis_output = gr.Markdown(
             label="",
             value="Click 'Analyze Plan' to get started...",
             elem_id="output-analysis"
         )
+        
+        # Add export controls
+        export_row, export_format, export_button, export_result = self.create_export_section()
+        
+        return analysis_output, export_row, export_format, export_button, export_result
     
     def update_model_choices(self, provider: str, lm_studio_models: List[str]) -> gr.Radio:
         """Update model choices based on provider selection."""

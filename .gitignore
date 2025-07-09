@@ -82,3 +82,6 @@ logs/
 *.tmp
 *.temp
 __pycache__/ui_components.cpython-313.pyc
+
+# Exports
+exports/

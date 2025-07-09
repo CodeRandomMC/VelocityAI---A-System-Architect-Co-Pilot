@@ -2,15 +2,18 @@
 Main application entry point for VelocityAI - A Systems Architect Toolset.
 """
 
+import os
 import json
 import gradio as gr
 import bleach
-from typing import Generator, List
+from typing import Generator, List, Dict, Any, Optional, Tuple
 
-from config import APP_HOST, APP_PORT, GEMINI_FLASH, GEMINI_PRO, DEFAULT_LM_STUDIO_HOST
+from config import (APP_HOST, APP_PORT, GEMINI_FLASH, GEMINI_PRO, 
+                   DEFAULT_LM_STUDIO_HOST, EXPORT_FORMATS, DEFAULT_EXPORT_FORMAT)
 from core_logic import validate_input, parse_analysis_response, format_analysis_response
 from llm_clients import LLMClientFactory, LLMClientError
 from ui_components import UIComponents, create_gradio_interface
+from export_utils import ExportManager
 
 
 def sanitize_markdown_output(content: str) -> str:
@@ -69,6 +72,8 @@ class ArchitectureAnalyzer:
         self.google_client = LLMClientFactory.create_google_client()
         self.lm_studio_client = LLMClientFactory.create_lm_studio_client()
         self.ui = UIComponents()
+        self.export_manager = ExportManager()
+        self.last_analysis_result = None  # Store the last analysis result for export
     
     def analyze_architecture(self, markdown_plan: str, model_choice: str, provider: str, lm_studio_host: str = DEFAULT_LM_STUDIO_HOST) -> Generator[str, None, None]:
         """
@@ -92,6 +97,7 @@ class ArchitectureAnalyzer:
         yield sanitize_markdown_output(f"🤖 Analyzing your plan with {model_choice} via {provider}...")
 
         response_text = ""  # Initialize to avoid unbound variable issues
+        self.last_analysis_result = None  # Reset last analysis result
         
         try:
             # Get the appropriate client and generate analysis
@@ -112,6 +118,14 @@ class ArchitectureAnalyzer:
             # Parse and format the response
             analysis_json = parse_analysis_response(response_text)
             formatted_output = format_analysis_response(analysis_json, model_choice)
+            
+            # Store the analysis results and original plan for export
+            self.last_analysis_result = {
+                "analysis_data": analysis_json,
+                "markdown_plan": markdown_plan,
+                "model_used": model_choice
+            }
+            
             yield sanitize_markdown_output(formatted_output)
 
         except json.JSONDecodeError:
@@ -161,6 +175,116 @@ class ArchitectureAnalyzer:
         else:
             return gr.Radio()  # No change for other providers
     
+    def export_analysis_result(self, format_choice: str) -> str:
+        """
+        Export the last analysis result to the selected format.
+        
+        Args:
+            format_choice: The format to export to (e.g., PDF, PNG, etc.)
+            
+        Returns:
+            str: File path or URL to the exported file
+        """
+        if not self.last_analysis_result:
+            return sanitize_markdown_output("**Error:** No analysis result available to export. Please run an analysis first.")
+        
+        # Get the export format class
+        export_format = next((ef for ef in EXPORT_FORMATS if ef["label"] == format_choice), None)
+        
+        if not export_format:
+            return sanitize_markdown_output(f"**Error:** Unknown export format: {format_choice}")
+        
+        try:
+            # Perform the export
+            file_path = self.export_manager.export_to_format(self.last_analysis_result, export_format["value"])
+            return sanitize_markdown_output(f"✅ Export successful! [Download here]({file_path})")
+        except Exception as e:
+            return sanitize_markdown_output(f"**Error:** Failed to export analysis result: {str(e)}")
+    
+    def export_analysis(self, format_choice: str) -> str:
+        """
+        Export the last analysis result in the specified format.
+        
+        Args:
+            format_choice: The format to export as (PDF, HTML, Markdown)
+            
+        Returns:
+            Status message with path to the exported file
+        """
+        if not self.last_analysis_result:
+            return sanitize_markdown_output("⚠️ No analysis results available for export. Please run an analysis first.")
+        
+        try:
+            # Get export format data
+            if format_choice not in EXPORT_FORMATS:
+                return sanitize_markdown_output(f"⚠️ Unsupported export format: {format_choice}. Supported formats: {', '.join(EXPORT_FORMATS)}")
+            
+            # Extract data from last analysis
+            analysis_data = self.last_analysis_result["analysis_data"]
+            markdown_plan = self.last_analysis_result["markdown_plan"]
+            model_used = self.last_analysis_result["model_used"]
+            
+            # Export to the selected format
+            file_path = self.export_manager.export_analysis(
+                analysis_data=analysis_data,
+                markdown_plan=markdown_plan,
+                model_used=model_used,
+                export_format=format_choice
+            )
+            
+            # Return a success message with file path
+            if os.path.exists(file_path):
+                return sanitize_markdown_output(f"✅ Analysis exported successfully as {format_choice}!\n\nFile saved to: `{file_path}`")
+            else:
+                return sanitize_markdown_output(f"⚠️ Export completed but file not found at: {file_path}")
+                
+        except Exception as e:
+            return sanitize_markdown_output(f"⚠️ Export failed: {str(e)}")
+    
+    def get_export_preview(self, format_choice: str = "PDF") -> str:
+        """
+        Get a preview or download link for the export.
+        
+        Args:
+            format_choice: The format to preview
+            
+        Returns:
+            HTML content with preview or download link
+        """
+        if not self.last_analysis_result:
+            return sanitize_markdown_output("⚠️ No analysis results available for preview. Please run an analysis first.")
+        
+        try:
+            # Extract data from last analysis
+            analysis_data = self.last_analysis_result["analysis_data"]
+            markdown_plan = self.last_analysis_result["markdown_plan"]
+            model_used = self.last_analysis_result["model_used"]
+            
+            # For PDF, generate a base64 preview
+            if format_choice == "PDF":
+                base64_pdf = self.export_manager.generate_base64_pdf(
+                    analysis_data=analysis_data,
+                    markdown_plan=markdown_plan,
+                    model_used=model_used
+                )
+                
+                # Return HTML with embedded PDF preview
+                preview_html = f"""
+                <div style="text-align: center;">
+                    <h3>PDF Preview</h3>
+                    <embed src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600px" type="application/pdf">
+                    <p>If the preview doesn't work, you can export the PDF using the export button.</p>
+                </div>
+                """
+                return preview_html
+            
+            else:
+                # For other formats, just show a message
+                return sanitize_markdown_output(f"Preview not available for {format_choice} format. Use the export button to save the file.")
+                
+        except Exception as e:
+            return sanitize_markdown_output(f"⚠️ Preview generation failed: {str(e)}")
+    
     def create_app(self) -> gr.Blocks:
         """Create the main Gradio application."""
         with create_gradio_interface() as demo:
@@ -186,7 +310,7 @@ class ArchitectureAnalyzer:
                 
                 # Output section
                 with gr.Column(scale=1, elem_classes="output-section"):
-                    output_analysis = self.ui.create_output_section()
+                    output_analysis, export_row, export_format, export_button, export_result = self.ui.create_output_section()
             
             # Event handlers
             provider_selector.change(
@@ -225,6 +349,31 @@ class ArchitectureAnalyzer:
                 fn=self.analyze_architecture,
                 inputs=[input_markdown, model_selector, provider_selector, lm_studio_host],
                 outputs=output_analysis
+            )
+            
+            # Clear any export preview when new analysis is run
+            submit_button.click(
+                fn=lambda _: gr.HTML(value="", visible=False),
+                outputs=export_result
+            )
+            
+            # Export button click handler
+            export_button.click(
+                fn=self.export_analysis,
+                inputs=export_format,
+                outputs=export_result
+            )
+            
+            # Show export result when clicked
+            export_button.click(
+                fn=lambda _: gr.HTML(visible=True),
+                outputs=export_result
+            )
+            
+            # Hide export result when format changes
+            export_format.change(
+                fn=lambda _: gr.HTML(visible=False),
+                outputs=export_result
             )
         
         return demo
