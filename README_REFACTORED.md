@@ -1,4 +1,4 @@
-# VelocityAI Architecture Reviewer - Refactored
+# VelocityAI - A Systems Architect Toolset - Refactored
 
 A modular architecture analysis tool that uses AI to review system design plans for scalability, reliability, security, and more.
 

@@ -1,5 +1,5 @@
 """
-Gradio UI components and styling for the Architecture Reviewer application.
+Gradio UI components and styling for VelocityAI - A Systems Architect Toolset.
 """
 
 import gradio as gr
@@ -93,7 +93,7 @@ class UIComponents:
     def create_header(self) -> gr.Column:
         """Create the main header section."""
         with gr.Column(elem_classes="main-header") as header:
-            gr.Markdown("# 🤖 GenAI Architecture Reviewer")
+            gr.Markdown("# 🚀 VelocityAI - A Systems Architect Toolset")
             gr.Markdown("Enter your system architecture plan in Markdown. The AI will analyze it for scalability, reliability, security, and more.")
         return header
     
@@ -218,4 +218,4 @@ class UIComponents:
 
 def create_gradio_interface() -> gr.Blocks:
     """Create the main Gradio interface."""
-    return gr.Blocks(css=CUSTOM_CSS, title="GenAI Architecture Reviewer")
+    return gr.Blocks(css=CUSTOM_CSS, title="VelocityAI - A Systems Architect Toolset")

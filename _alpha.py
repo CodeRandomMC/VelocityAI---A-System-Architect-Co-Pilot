@@ -327,9 +327,9 @@ footer {
 }
 """
 
-with gr.Blocks(css=custom_css, title="GenAI Architecture Reviewer") as demo:
+with gr.Blocks(css=custom_css, title="VelocityAI - A Systems Architect Toolset") as demo:
     with gr.Column(elem_classes="main-header"):
-        gr.Markdown("# 🤖 GenAI Architecture Reviewer")
+        gr.Markdown("# 🚀 VelocityAI - A Systems Architect Toolset")
         gr.Markdown("Enter your system architecture plan in Markdown. The AI will analyze it for scalability, reliability, security, and more.")
     
     with gr.Row():

@@ -1,4 +1,4 @@
-# VelocityAI Architecture Reviewer 🏗️🤖
+# VelocityAI - A Systems Architect Toolset 🏗️🤖
 
 ## The Story Behind This Tool
 

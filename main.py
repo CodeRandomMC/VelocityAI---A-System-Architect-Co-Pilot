@@ -1,5 +1,5 @@
 """
-Main application entry point for the GenAI Architecture Reviewer.
+Main application entry point for VelocityAI - A Systems Architect Toolset.
 """
 
 import json

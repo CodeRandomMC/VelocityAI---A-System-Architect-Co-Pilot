@@ -1,5 +1,5 @@
 """
-Configuration constants and settings for the GenAI Architecture Reviewer.
+Configuration constants and settings for VelocityAI - A Systems Architect Toolset.
 """
 
 import os
@@ -17,7 +17,7 @@ DEFAULT_LM_STUDIO_HOST = "localhost:1234"
 LM_STUDIO_MODELS = ["local-model"]
 
 # App configuration
-APP_TITLE = "VelocityAI Architecture Reviewer"
+APP_TITLE = "VelocityAI - A Systems Architect Toolset"
 APP_PORT = 7860
 APP_HOST = "0.0.0.0"
 
