@@ -26,7 +26,7 @@ What I realized is that **speed of iteration beats perfection of process**. Whil
 
 I needed something that could analyze architecture plans at the speed of my thinking. Traditional tools were too slow, too complex, or required too much setup. So I built a **single Python file** that:
 
-- Launches instantly with `python feedback.py`
+- Launches instantly with `python main.py`
 - Provides immediate feedback through a clean web interface
 - Works with both cloud and local AI models
 - Requires minimal dependencies and setup
@@ -105,14 +105,19 @@ The AI returns analysis in a consistent JSON format that gets beautifully render
 
 ### Core Components
 
-**This Tool's Architecture** (no database required):
+## 🏗️ Architecture Overview
+
 
 ```
-feedback.py          # Main Gradio application with UI and analysis logic
-test_lm_studio.py   # Local LLM testing utilities for LM Studio
-requirements.txt    # Python dependencies (gradio, google-genai, requests, etc.)
-.env                # Environment variables (GOOGLE_API_KEY)
-README.md          # This documentation
+SystemArchticectToolset/
+├── main.py              # Main application entry point
+├── config.py            # Configuration constants and settings
+├── core_logic.py        # Core analysis logic and prompt engineering
+├── llm_clients.py       # LLM client abstractions (Google GenAI, LM Studio)
+├── ui_components.py     # Gradio UI components and styling
+├── test_refactored.py   # Test script to verify refactored modules
+├── requirements.txt     # Python dependencies
+└── README.md           # This file
 ```
 
 ### Architecture of This Tool
@@ -131,7 +136,7 @@ This tool is built as a **single-file Python application** that demonstrates the
 
 ### Option 1: Single-File Version (Original)
 
-- **File**: `feedback.py`
+- **File**: `_alpha.py` {Could be behind a few versions compared to the modular version}
 - **Best for**: Quick prototyping, simple deployment, minimal setup
 - **Philosophy**: Single file = single purpose, zero configuration
 
@@ -223,8 +228,8 @@ pip install -r requirements.txt
 1. Get a Google AI Studio API key from [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
 2. Create a `.env` file: `GOOGLE_API_KEY=your_api_key_here`
 3. Choose your version:
-   - **Single-file**: `python feedback.py`
    - **Modular**: `python main.py`
+   - **Single-file**: `python _alpha_.py`
 4. Open your browser to `http://localhost:7860`
 5. Start analyzing architecture plans immediately!
 
@@ -233,7 +238,7 @@ pip install -r requirements.txt
 1. Download and install [LM Studio](https://lmstudio.ai/)
 2. Load a model (recommend 7B+ parameter models for better analysis)
 3. Start the local server in LM Studio (Server tab → Start Server)
-4. Run: `python feedback.py`
+4. Run: `python main.py`
 5. Select "LM Studio (Local)" as your provider
 6. Configure your LM Studio host (default: localhost:1234)
 7. Test the connection to verify it's working
