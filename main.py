@@ -353,7 +353,8 @@ class ArchitectureAnalyzer:
             
             # Clear any export preview when new analysis is run
             submit_button.click(
-                fn=lambda _: gr.HTML(value="", visible=False),
+                fn=lambda: gr.HTML(value="", visible=False),
+                inputs=[],
                 outputs=export_result
             )
             
@@ -366,13 +367,15 @@ class ArchitectureAnalyzer:
             
             # Show export result when clicked
             export_button.click(
-                fn=lambda _: gr.HTML(visible=True),
+                fn=lambda: gr.HTML(visible=True),
+                inputs=[],
                 outputs=export_result
             )
             
             # Hide export result when format changes
             export_format.change(
-                fn=lambda _: gr.HTML(visible=False),
+                fn=lambda x: gr.HTML(visible=False),
+                inputs=export_format,
                 outputs=export_result
             )
         

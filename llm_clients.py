@@ -160,12 +160,78 @@ class LMStudioClient:
                 {"role": "user", "content": f"Please analyze this architecture plan:\n\n{markdown_plan}"}
             ]
             
+            # Define the JSON schema for the expected response format
+            json_schema = {
+                "type": "object",
+                "properties": {
+                    "summaryOfReviewerObservations": {
+                        "type": "string",
+                        "description": "A concise executive summary of the overall architectural strengths and key areas for focus"
+                    },
+                    "planSummary": {
+                        "type": "string", 
+                        "description": "Brief summary of what the system does as understood by Archimedes"
+                    },
+                    "strengths": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "dimension": {"type": "string"},
+                                "point": {"type": "string"},
+                                "reason": {"type": "string"}
+                            },
+                            "required": ["dimension", "point", "reason"]
+                        }
+                    },
+                    "areasForImprovement": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "area": {"type": "string"},
+                                "concern": {"type": "string"},
+                                "suggestion": {"type": "string"},
+                                "severity": {"type": "string", "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]},
+                                "impact": {"type": "string"},
+                                "tradeOffsConsidered": {"type": "string"}
+                            },
+                            "required": ["area", "concern", "suggestion", "severity"]
+                        }
+                    },
+                    "strategicRecommendations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "recommendation": {"type": "string"},
+                                "rationale": {"type": "string"},
+                                "potentialImplications": {"type": "string"}
+                            },
+                            "required": ["recommendation", "rationale"]
+                        }
+                    },
+                    "nextStepsAndConsiderations": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
+                },
+                "required": ["summaryOfReviewerObservations", "planSummary", "strengths", "areasForImprovement", "strategicRecommendations", "nextStepsAndConsiderations"]
+            }
+
             payload: Dict[str, Any] = {
                 "model": model_choice,
                 "messages": messages,
                 "temperature": 0.2,
                 "stream": False,
-                "response_format": {"type": "json_object"}  # Request JSON format
+                "response_format": {
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "architecture_analysis",
+                        "schema": json_schema,
+                        "strict": True
+                    }
+                }
             }
             
             response = requests.post(
