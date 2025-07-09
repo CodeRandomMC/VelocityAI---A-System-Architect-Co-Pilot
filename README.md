@@ -1,213 +1,93 @@
-# VelocityAI - A Systems Architect Toolset 🏗️🤖
+# VelocityAI - Systems Architect Toolset 🏗️🤖
 
-## The Story Behind This Tool
+> **AI-augmented architecture review companion that matches high-velocity thinking patterns**
 
-I built this because I think differently about systems. I've always had a high-velocity thinking pattern for large-scale systems - I can see the big picture, identify bottlenecks, and understand complex interconnections quickly. But I didn't have the formal education opportunities to learn all the professional architectural lingo and frameworks that traditional system architects use.
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Gradio](https://img.shields.io/badge/Built%20with-Gradio-orange)](https://gradio.app/)
 
-What I realized is that **speed of iteration beats perfection of process**. While traditional architecture reviews can take weeks or months, I wanted to compress that down to hours using AI-augmented tools that could match my thinking velocity.
+## 🎯 Mission
 
-## The Problem I Solved
+**Democratize architectural expertise through AI augmentation.** Transform architecture reviews from weeks-long processes into minute-long iterations, enabling rapid system design validation without sacrificing depth or quality.
 
-**Traditional Architecture Reviews:**
+## 📋 Project Overview
 
-- Take weeks/months of back-and-forth
-- Require scheduling multiple senior architects
-- Often get bogged down in corporate process
-- Miss critical issues until it's expensive to fix
+VelocityAI is an intelligent architecture analysis tool that provides instant, structured feedback on system designs. Built for architects, engineers, and technical leaders who think at high velocity but need comprehensive validation of their architectural decisions.
 
-**My AI-Augmented Approach:**
+### 🎯 Core Purpose
 
-- Get comprehensive feedback in minutes
-- Iterate rapidly on designs
-- Catch issues early when they're cheap to fix
-- Scale expertise without scaling headcount
+- **Accelerate Architecture Reviews**: Compress weeks of traditional review cycles into minutes
+- **Scale Expertise**: Get senior-level architectural insights without requiring senior architects
+- **Enable Rapid Iteration**: Fail fast, learn fast, improve fast
+- **Maintain Quality**: Never sacrifice architectural rigor for speed
 
-**Why I Built This Specific Tool:**
+### 🚀 Key Features
 
-I needed something that could analyze architecture plans at the speed of my thinking. Traditional tools were too slow, too complex, or required too much setup. So I built a **single Python file** that:
+- **Dual AI Provider Support**: Choose between cloud (Google Gemini) or local (LM Studio) inference
+- **Structured Analysis**: Consistent JSON output covering 7 critical architectural dimensions
+- **Real-time Feedback**: Instant analysis through an intuitive web interface
+- **Privacy-First Options**: Keep sensitive designs internal with local LLM support
+- **Zero Configuration**: Works out of the box with minimal setup
 
-- Launches instantly with `python main.py`
-- Provides immediate feedback through a clean web interface
-- Works with both cloud and local AI models
-- Requires minimal dependencies and setup
-- Focuses purely on architectural analysis, not project management
+### 🏗️ Architectural Dimensions Analyzed
 
-## How It Works
+1. **Scalability** - Growth handling and elasticity
+2. **Reliability** - Fault tolerance and resilience patterns
+3. **Security** - Threat modeling and vulnerability assessment
+4. **Performance** - Latency, throughput, and resource optimization
+5. **Maintainability** - Code quality and evolution capability
+6. **Cost Efficiency** - Resource utilization and TCO optimization
+7. **Observability** - Monitoring, debugging, and operational insight
 
-### 1. The Custom Feedback AI
+## 🛠️ Technology Stack
 
-I started with a specialized system prompt that embodies 20+ years of senior principal architect experience. This isn't just a generic AI - it's trained to analyze systems across 7 critical dimensions:
+- **Backend**: Python with modular architecture
+- **Frontend**: Gradio web interface
+- **AI Providers**: Google GenAI (Gemini), LM Studio (Local LLMs)
+- **Output Format**: Structured JSON → Rendered Markdown
+- **Configuration**: Environment-based with dynamic UI controls
 
-- **Scalability**: Can it handle growth?
-- **Reliability**: What breaks and when?
-- **Security**: Where are the vulnerabilities?
-- **Performance**: Will it be fast enough?
-- **Maintainability**: Can future developers work with it?
-- **Cost Efficiency**: Are we burning money?
-- **Observability**: Can we debug it when it breaks?
-
-### 2. Local LLM Support for Security
-
-I added local LLM support through LM Studio because sending architecture plans to public APIs creates security and privacy concerns. This also allows for:
-
-- **Privacy**: Keep sensitive system designs internal
-- **Custom Models**: Use specialized architecture-trained models
-- **No API Costs**: Run inference locally
-- **Offline Capability**: Work without internet
-- **Flexible Deployment**: Connect to LM Studio on any host/port
-
-#### New: Dynamic Host Configuration
-
-The latest version includes dynamic LM Studio host configuration:
-
-- **Custom Host Support**: Connect to LM Studio running on any host:port (not just localhost:1234)
-- **Connection Testing**: Built-in connection testing with real-time status feedback
-- **Dynamic Model Loading**: Automatically detects and loads available models from your LM Studio instance
-- **Model Refresh**: Refresh the model list without restarting the application
-- **Error Handling**: Clear error messages for connection issues and timeouts
-
-### 3. Structured JSON Output
-
-The AI returns analysis in a consistent JSON format that gets beautifully rendered:
-
-```json
-{
-  "planSummary": "What the system does",
-  "strengths": [{ "point": "...", "reason": "..." }],
-  "areasForImprovement": [
-    {
-      "area": "Database Design",
-      "concern": "Single point of failure",
-      "suggestion": "Add read replicas",
-      "severity": "HIGH"
-    }
-  ],
-  "actionableKeyPoints": ["Next steps to take"]
-}
-```
-
-## Technical Architecture
+## 🏗️ System Architecture
 
 ### Frontend: Gradio Web Interface
 
-- Clean, responsive design
-- Real-time analysis feedback
-- Markdown input/output
-- Model selection interface
+- Clean, responsive design optimized for rapid iteration
+- Real-time analysis feedback with streaming updates
+- Markdown input/output with syntax highlighting
+- Dynamic model selection and provider switching
 
-### Backend: Dual-Provider Support
+### Backend: Dual-Provider Architecture
 
-- **Google GenAI**: Gemini Flash/Pro for cloud inference
+- **Google GenAI**: Cloud-based Gemini Flash/Pro models
 - **LM Studio**: Local model support with flexible host configuration
-- Automatic model detection and refresh
-- Real-time connection testing
-- Graceful fallback handling
+- Automatic model detection and connection testing
+- Graceful fallback handling and error recovery
 
-### Core Components
-
-## 🏗️ Architecture Overview
-
+### Core Components Structure
 
 ```
 SystemArchticectToolset/
-├── main.py              # Main application entry point
-├── config.py            # Configuration constants and settings
-├── core_logic.py        # Core analysis logic and prompt engineering
-├── llm_clients.py       # LLM client abstractions (Google GenAI, LM Studio)
-├── ui_components.py     # Gradio UI components and styling
-├── test_refactored.py   # Test script to verify refactored modules
+├── main.py              # Application orchestration and entry point
+├── config.py            # Configuration constants and environment settings
+├── core_logic.py        # Analysis logic and specialized prompt engineering
+├── llm_clients.py       # LLM client abstractions with factory pattern
+├── ui_components.py     # Gradio UI components and custom styling
+├── test_refactored.py   # Comprehensive test suite and validation
 ├── requirements.txt     # Python dependencies
-└── README.md           # This file
+└── README.md           # This documentation
 ```
 
-### Architecture of This Tool
+### Modular Design Philosophy
 
-This tool is built as a **single-file Python application** that demonstrates the power of rapid prototyping:
+The application follows a **separation of concerns** architecture:
 
-- **Single Entry Point**: `feedback.py` contains the entire application
-- **Dual AI Providers**: Seamlessly switch between cloud (Google) and local (LM Studio) inference
-- **Real-time UI**: Gradio provides instant feedback and responsive interface
-- **Structured Analysis**: Consistent JSON output parsed into beautiful markdown
-- **Zero Configuration**: Works out of the box with minimal setup
+- **Configuration Layer** (`config.py`): Environment and model settings
+- **Client Layer** (`llm_clients.py`): AI provider abstractions
+- **Logic Layer** (`core_logic.py`): Analysis algorithms and prompt engineering
+- **UI Layer** (`ui_components.py`): Interface components and styling
+- **Orchestration Layer** (`main.py`): Application coordination and event handling
 
-## 🔄 Refactored Modular Architecture
-
-**NEW**: The application has been refactored into a clean, modular structure for better maintainability and extensibility. You can now choose between:
-
-### Option 1: Single-File Version (Original)
-
-- **File**: `_alpha.py` {Could be behind a few versions compared to the modular version}
-- **Best for**: Quick prototyping, simple deployment, minimal setup
-- **Philosophy**: Single file = single purpose, zero configuration
-
-### Option 2: Modular Version (Refactored)
-
-- **Entry Point**: `main.py`
-- **Best for**: Development, testing, extending functionality
-- **Philosophy**: Separation of concerns, maintainable architecture
-
-#### Modular Structure Overview:
-
-```
-├── main.py              # Main application orchestration
-├── config.py            # Configuration constants and settings
-├── core_logic.py        # Core analysis logic and prompt engineering
-├── llm_clients.py       # LLM client abstractions (Google GenAI, LM Studio)
-├── ui_components.py     # Gradio UI components and styling
-├── test_refactored.py   # Comprehensive test suite
-└── README_REFACTORED.md # Detailed refactored architecture documentation
-```
-
-#### Key Benefits of Refactored Version:
-
-- **Separation of Concerns**: Each module has a single responsibility
-- **Maintainability**: Easy to modify individual components
-- **Testability**: Comprehensive test coverage with `test_refactored.py`
-- **Extensibility**: Simple to add new LLM providers or UI components
-- **Type Safety**: Full type annotations and error handling
-
-#### Usage:
-
-```bash
-# Run the refactored version
-python main.py
-
-# Test the refactored modules
-python test_refactored.py
-```
-
-Both versions provide identical functionality - choose based on your needs!
-
-## Why This Approach Is Different
-
-Most system architects I know are either:
-
-1. **Highly experienced but slow** - They know everything but take forever
-2. **Fast but inexperienced** - They move quickly but miss critical issues
-
-I'm building tools that combine **high-velocity thinking with deep expertise** through AI augmentation. This isn't about replacing human architects - it's about amplifying their capabilities.
-
-### The Philosophy: Speed + Simplicity
-
-This tool embodies my core beliefs:
-
-- **Single File = Single Purpose**: One Python file, one clear function
-- **Instant Feedback**: No waiting, no complicated setup
-- **Choice of AI**: Use cloud or local models based on your needs
-- **Structured Output**: Consistent, actionable analysis every time
-- **Zero Lock-in**: It's just Python - modify it however you want
-
-### The Multiplier Effect
-
-With this tool, I can:
-
-- Review 10x more architecture plans in the same time
-- Catch issues I might miss in manual reviews
-- Provide consistent, structured feedback
-- Iterate on designs at the speed of thought
-- Share the tool with others instantly (just share the Python file)
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -215,193 +95,275 @@ With this tool, I can:
 pip install -r requirements.txt
 ```
 
-**What gets installed:**
+**Dependencies:**
 
-- `gradio` - Web interface framework
+- `gradio` - Interactive web interface framework
 - `google-genai` - Google Gemini API client
-- `requests` - HTTP client for LM Studio
+- `requests` - HTTP client for LM Studio communication
 - `python-dotenv` - Environment variable management
-- `typing` - Type hints support
+- `bleach` - Output sanitization for security
 
-### Quick Start (Cloud)
+### Option 1: Cloud-Based Analysis (Google GenAI)
 
-1. Get a Google AI Studio API key from [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-2. Create a `.env` file: `GOOGLE_API_KEY=your_api_key_here`
-3. Choose your version:
-   - **Modular**: `python main.py`
-   - **Single-file**: `python _alpha_.py`
-4. Open your browser to `http://localhost:7860`
-5. Start analyzing architecture plans immediately!
+1. **Get API Key**: Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. **Configure Environment**: Create `.env` file with `GOOGLE_API_KEY=your_api_key_here`
+3. **Launch Application**:
+   ```bash
+   python main.py
+   ```
+4. **Access Interface**: Open `http://localhost:7860` in your browser
+5. **Select Provider**: Choose "Google GenAI" and select Gemini model
+6. **Start Analyzing**: Paste your architecture plan and get instant feedback
 
-### For LM Studio (Local)
+### Option 2: Local Analysis (LM Studio)
 
-1. Download and install [LM Studio](https://lmstudio.ai/)
-2. Load a model (recommend 7B+ parameter models for better analysis)
-3. Start the local server in LM Studio (Server tab → Start Server)
-4. Run: `python main.py`
-5. Select "LM Studio (Local)" as your provider
-6. Configure your LM Studio host (default: localhost:1234)
-7. Test the connection to verify it's working
-8. Select from available models automatically detected
+1. **Install LM Studio**: Download from [lmstudio.ai](https://lmstudio.ai/)
+2. **Load Model**: Use 7B+ parameter models for better analysis quality
+3. **Start Server**: Enable LM Studio's local server (Server tab → Start Server)
+4. **Launch Application**:
+   ```bash
+   python main.py
+   ```
+5. **Configure Connection**:
+   - Select "LM Studio (Local)" provider
+   - Set host configuration (default: `localhost:1234`)
+   - Test connection to verify availability
+6. **Select Model**: Choose from automatically detected models
+7. **Start Analyzing**: Input architecture plans for local, private analysis
 
-#### LM Studio Configuration Options
-
-- **Default Setup**: LM Studio running on `localhost:1234`
-- **Custom Host**: Enter any host:port combination (e.g., `192.168.1.100:1234`)
-- **Remote LM Studio**: Connect to LM Studio running on another machine
-- **Different Port**: If you're running LM Studio on a different port
-
-#### Using the LM Studio Interface
-
-1. **Select Provider**: Choose "LM Studio (Local)" from the provider dropdown
-2. **Configure Host**: Enter your LM Studio host:port in the configuration section
-3. **Test Connection**: Click "Test Connection" to verify LM Studio is accessible
-4. **Select Model**: Choose from dynamically loaded models from your LM Studio instance
-5. **Refresh Models**: Use the refresh button if you load new models in LM Studio
-
-### Testing Local Setup
-
-**Single-file version:**
+### Testing Installation
 
 ```bash
-python _alpha.py
-```
+# Run comprehensive tests
+python test_refactored.py
 
-**Modular version:**
-
-```bash
+# Launch application
 python main.py
 ```
 
-## Usage Example
+## 💡 Usage Example
 
-**Input**: Paste a system architecture plan in Markdown (example below):
+### Input: Architecture Plan in Markdown
 
 ```markdown
 # Real-time Analytics Dashboard
 
+## Overview
+
+Track user interactions and display analytics in real-time for a SaaS platform.
+
 ## Components
 
-- Frontend: React SPA
-- API: Node.js monolith on single EC2
-- Database: PostgreSQL on same instance
-- WebSocket for real-time updates
+- **Frontend**: React SPA with WebSocket connections
+- **API Gateway**: Single Node.js service on AWS EC2
+- **Database**: PostgreSQL instance (same EC2)
+- **Real-time**: WebSocket connections for live updates
 
 ## Data Flow
 
-1. User clicks → POST /event
-2. API writes to PostgreSQL
-3. WebSocket pushes to all clients
+1. User performs action → Frontend captures event
+2. Event sent via POST /events → API processes and stores in PostgreSQL
+3. API broadcasts update via WebSocket → All connected dashboards update
 ```
 
-**Output**: Get instant AI-powered analysis with:
+### Output: Structured AI Analysis
 
-- ✅ **Strengths**: Real-time capability, simple architecture
-- 🔍 **Issues**: Single point of failure, no caching layer
-- 🚀 **Next Steps**: Add load balancer, implement Redis
+**📋 Plan Summary**
+Real-time analytics system with React frontend, Node.js API, and PostgreSQL database using WebSockets for live updates.
 
-_Note: The above is an example of what you would input to analyze - not the components of this tool itself._
+**✅ Strengths**
 
-## What This Tool Actually Is
+- Simple architecture with clear data flow
+- Real-time capability through WebSocket implementation
+- Minimal technology stack reduces complexity
 
-This is a **Python-based web application** built with:
+**🔍 Areas for Improvement**
 
-- **Gradio**: For the interactive web interface
-- **Google GenAI SDK**: For cloud-based Gemini model access
-- **Requests**: For LM Studio local API communication
-- **Python-dotenv**: For environment variable management
+- **Database Layer** (HIGH): Single PostgreSQL instance creates bottleneck and single point of failure
+- **Scalability** (MEDIUM): Monolithic API will struggle under load
+- **Security** (CRITICAL): No authentication or rate limiting mentioned
 
-The tool itself analyzes architecture plans written in Markdown and provides structured feedback through either Google's Gemini models or local LLMs via LM Studio. It's designed to be a **fast, iterative architecture review companion** that matches high-velocity thinking patterns.
+**🚀 Next Steps**
 
-## Future Vision
+1. Implement database replication for high availability
+2. Add Redis for caching and session management
+3. Design API authentication and authorization strategy
+4. Plan horizontal scaling approach for API layer
 
-I believe this approach could be extended with:
+## 🧠 AI Analysis Framework
 
-- **Specialized Models**: Custom-trained architecture review models
-- **Integration**: Connect with existing architecture tools
-- **Collaboration**: Team-based architecture reviews
-- **Templates**: Common pattern libraries
-- **Metrics**: Track architecture quality over time
+The tool employs **"Archimedes"** - a specialized AI system prompt embodying 25+ years of senior principal architect experience. Analysis covers:
 
-## The Bigger Picture
+### Structured Output Format
 
-This isn't just about architecture reviews. It's about **democratizing expertise** and **accelerating innovation**. I'm building tools that let anyone with good ideas move at the speed of their thinking, not the speed of bureaucracy.
+```json
+{
+  "summaryOfReviewerObservations": "Executive summary of architectural assessment",
+  "planSummary": "What the system does and its core components",
+  "strengths": [
+    {
+      "dimension": "Scalability | Security | Performance | etc.",
+      "point": "Specific strength identified",
+      "reason": "Why this design choice is beneficial"
+    }
+  ],
+  "areasForImprovement": [
+    {
+      "area": "Specific architectural concern",
+      "concern": "Exact problem or risk identified",
+      "suggestion": "Actionable, pragmatic recommendation",
+      "severity": "CRITICAL | HIGH | MEDIUM | LOW",
+      "impact": "Consequence if not addressed",
+      "tradeOffsConsidered": "Associated trade-offs"
+    }
+  ],
+  "strategicRecommendations": [
+    {
+      "recommendation": "High-level architectural improvements",
+      "rationale": "Why this direction is beneficial",
+      "potentialImplications": "Implementation effort required"
+    }
+  ],
+  "nextStepsAndConsiderations": [
+    "Prioritized next steps and clarifying questions"
+  ]
+}
+```
 
-Traditional gatekeepers say you need decades of experience and formal education. I say you need **good tools, fast iteration, and the courage to build**.
+## 🔄 Development & Contributing
 
----
+### Project Philosophy
 
----
+**Speed + Simplicity + Quality**
 
-## Changelog
+- Rapid iteration without sacrificing architectural rigor
+- AI augmentation to scale expertise, not replace it
+- Open source tools that democratize architectural knowledge
 
-### Latest Updates (July 2025)
+### Architecture Principles
 
-#### � Modular Architecture Refactoring
+1. **Modular Design**: Separation of concerns for maintainability
+2. **Provider Agnostic**: Support both cloud and local AI inference
+3. **Security First**: Privacy options for sensitive architectural data
+4. **User Experience**: Intuitive interface that matches thinking velocity
+5. **Extensibility**: Easy to add new providers, models, or analysis types
 
-**Major Update: Dual Architecture Support**
+### Contributing Guidelines
 
-The application now supports both single-file and modular architectures:
+We welcome contributions that align with the project's high-velocity, AI-augmented approach:
 
-**New Modular Structure:**
+- **Bug Reports**: Use GitHub issues with detailed reproduction steps
+- **Feature Requests**: Propose enhancements that improve analysis speed or quality
+- **Code Contributions**: Follow the modular architecture patterns
+- **Documentation**: Help improve clarity and accessibility
 
-- **`main.py`**: Main application orchestration and entry point
-- **`config.py`**: Centralized configuration management
-- **`core_logic.py`**: Core analysis logic and prompt engineering
-- **`llm_clients.py`**: LLM client abstractions with factory pattern
-- **`ui_components.py`**: Gradio UI components and styling
-- **`test_refactored.py`**: Comprehensive test suite
-
-**Benefits:**
-
-- **Separation of Concerns**: Each module has a single responsibility
-- **Maintainability**: Easy to modify individual components without affecting others
-- **Testability**: Comprehensive test coverage with automated validation
-- **Extensibility**: Simple to add new LLM providers, UI components, or analysis types
-- **Type Safety**: Full type annotations and robust error handling
-
-**Usage:**
+### Development Setup
 
 ```bash
-# Run modular version
-python main.py
+# Clone and install dependencies
+git clone <repository-url>
+cd SystemArchticectToolset
+pip install -r requirements.txt
 
-# Test modular architecture
+# Run tests
 python test_refactored.py
+
+# Launch development server
+python main.py
 ```
 
-**Documentation:** See `README_REFACTORED.md` for detailed architecture documentation.
+## 📄 License
 
-#### �🚀 Enhanced LM Studio Integration
+MIT License - Build whatever you want with this tool.
 
-**New Features:**
+---
 
-- **Dynamic Host Configuration**: Configure LM Studio host from the UI instead of hardcoded localhost:1234
-- **Real-time Connection Testing**: Test your LM Studio connection with instant feedback
-- **Automatic Model Discovery**: Dynamically load available models from your LM Studio instance
-- **Model Refresh**: Refresh the model list without restarting the application
-- **Remote LM Studio Support**: Connect to LM Studio running on different machines or ports
+## 📈 Updates & Changelog
 
-**Technical Improvements:**
+> **Note**: This section is for ongoing updates. Add new entries at the top of each release section.
 
-- Improved error handling for connection timeouts and failures
-- Better UI feedback for connection status
-- Automatic model list updates when host configuration changes
-- Enhanced security with local-only inference options
+### 🔥 Latest Release - v2.0.0 (July 2025)
 
-**User Experience:**
+#### ✨ Major Features
 
-- Cleaner interface with collapsible LM Studio configuration section
-- Visual indicators for connection status (✅ Connected, ❌ Failed)
-- Model count display when successfully connected
-- Intuitive host configuration with validation
+**🏗️ Modular Architecture Refactoring**
+
+- Complete codebase restructuring into maintainable modules
+- Separation of concerns: config, clients, logic, UI, and orchestration
+- Comprehensive test suite with `test_refactored.py`
+- Type annotations and enhanced error handling throughout
+
+**🚀 Enhanced LM Studio Integration**
+
+- Dynamic host configuration (not limited to localhost:1234)
+- Real-time connection testing with status feedback
+- Automatic model discovery and refresh capabilities
+- Support for remote LM Studio instances
+- Enhanced error handling for connection issues
+
+**🎨 Improved User Experience**
+
+- Cleaner, more intuitive interface design
+- Visual connection status indicators
+- Collapsible configuration sections
+- Better error messages and user guidance
+- Streaming analysis updates for real-time feedback
+
+#### 🛠️ Technical Improvements
+
+**🔒 Security Enhancements**
+
+- Output sanitization with `bleach` library
+- XSS protection for markdown rendering
+- Safe link handling with `rel="nofollow"`
+- Input validation and error boundary handling
+
+**⚡ Performance Optimizations**
+
+- Optimized API client initialization
+- Better connection pooling and timeout handling
+- Reduced UI rendering overhead
+- Efficient model list caching
+
+**🧪 Testing & Quality**
+
+- Comprehensive test coverage across all modules
+- Automated validation of core functionality
+- Error scenario testing
+- Integration test suite
+
+#### 📝 Documentation Updates
+
+**📚 Enhanced Documentation**
+
+- Portfolio-ready README with clear mission statement
+- Structured project overview and technical specifications
+- Professional formatting with badges and visual hierarchy
+- Clear installation and usage instructions
+
+**🗂️ New Documentation Structure**
+
+- Centralized updates section for ongoing changes
+- Technical architecture documentation
+- Contributing guidelines and development setup
+- Clear licensing and usage terms
+
+### 🔮 Planned Updates (Roadmap)
+
+#### Next Release (v2.1.0 - Planned)
+
+- **Custom Model Support**: Fine-tuned architecture analysis models
+- **Batch Analysis**: Process multiple architecture plans simultaneously
+- **Export Capabilities**: PDF and detailed report generation
+- **Template Library**: Common architectural pattern templates
+
+#### Future Enhancements (v3.0.0+)
+
+- **Team Collaboration**: Multi-user architecture review workflows
+- **Integration APIs**: Connect with existing architecture tools
+- **Metrics Dashboard**: Track architecture quality over time
+- **Advanced Analytics**: Historical trend analysis and recommendations
+
+---
 
 _Built with high-velocity thinking and AI augmentation_ 🚀
-
-## Contributing
-
-This tool reflects my thinking patterns and workflow. If you have similar high-velocity thinking or want to contribute to AI-augmented architecture tools, I'd love to collaborate.
-
-## License
-
-MIT License - Build whatever you want with this.
