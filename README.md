@@ -14,6 +14,8 @@
 
 VelocityAI is an intelligent architecture analysis tool that provides instant, structured feedback on system designs. Built for architects, engineers, and technical leaders who think at high velocity but need comprehensive validation of their architectural decisions.
 
+![VelocityAI Interface](images/velocity_ai.png)
+
 ### 🎯 Core Purpose
 
 - **Accelerate Architecture Reviews**: Compress weeks of traditional review cycles into minutes
@@ -74,6 +76,8 @@ VelocityAI is an intelligent architecture analysis tool that provides instant, s
 - In-UI previews and downloadable outputs
 - Customizable theming and templating system
 
+![Export Showcase](images/export_showcase.png)
+
 ### Core Components Structure
 
 ```
@@ -128,6 +132,8 @@ pip install -r requirements.txt
 6. **Start Analyzing**: Paste your architecture plan and get instant feedback
 
 ### Option 2: Local Analysis (LM Studio)
+
+![Local LLM Support](images/local_llm_support.png)
 
 1. **Install LM Studio**: Download from [lmstudio.ai](https://lmstudio.ai/)
 2. **Load Model**: Use 7B+ parameter models for better analysis quality
