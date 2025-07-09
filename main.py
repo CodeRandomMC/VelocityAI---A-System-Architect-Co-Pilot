@@ -4,12 +4,61 @@ Main application entry point for VelocityAI - A Systems Architect Toolset.
 
 import json
 import gradio as gr
+import bleach
 from typing import Generator, List
 
 from config import APP_HOST, APP_PORT, GEMINI_FLASH, GEMINI_PRO, DEFAULT_LM_STUDIO_HOST
 from core_logic import validate_input, parse_analysis_response, format_analysis_response
 from llm_clients import LLMClientFactory, LLMClientError
 from ui_components import UIComponents, create_gradio_interface
+
+
+def sanitize_markdown_output(content: str) -> str:
+    """
+    Sanitize markdown content to prevent XSS attacks.
+    
+    This function removes potentially dangerous HTML tags and attributes
+    while preserving safe markdown formatting.
+    
+    Args:
+        content (str): The raw markdown content from LLM
+        
+    Returns:
+        str: Sanitized markdown content safe for rendering
+    """
+    # Define allowed HTML tags for markdown formatting
+    allowed_tags = [
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',  # Headers
+        'p', 'br', 'hr',                       # Paragraphs and breaks
+        'strong', 'b', 'em', 'i', 'u', 's',   # Text formatting
+        'ul', 'ol', 'li',                      # Lists
+        'blockquote', 'pre', 'code',           # Code and quotes
+        'table', 'thead', 'tbody', 'tr', 'th', 'td',  # Tables
+        'a',                                   # Links (with limited attributes)
+    ]
+    
+    # Define allowed attributes for specific tags
+    allowed_attributes = {
+        'a': ['href', 'title'],
+        'code': ['class'],  # For syntax highlighting
+        'pre': ['class'],   # For code blocks
+    }
+    
+    # Sanitize the content
+    cleaned_content = bleach.clean(
+        content,
+        tags=allowed_tags,
+        attributes=allowed_attributes,
+        strip=True  # Remove disallowed tags completely
+    )
+    
+    # Additional protection: ensure URLs in links are safe
+    cleaned_content = bleach.linkify(
+        cleaned_content,
+        callbacks=[bleach.callbacks.nofollow]  # Add rel="nofollow" to external links
+    )
+    
+    return cleaned_content
 
 
 class ArchitectureAnalyzer:
@@ -36,11 +85,11 @@ class ArchitectureAnalyzer:
         """
         if not validate_input(markdown_plan):
             gr.Warning("Please enter an architecture plan to analyze.")
-            yield "Please enter an architecture plan to analyze."
+            yield sanitize_markdown_output("Please enter an architecture plan to analyze.")
             return
 
         # Show loading message
-        yield f"🤖 Analyzing your plan with {model_choice} via {provider}..."
+        yield sanitize_markdown_output(f"🤖 Analyzing your plan with {model_choice} via {provider}...")
 
         response_text = ""  # Initialize to avoid unbound variable issues
         
@@ -48,7 +97,7 @@ class ArchitectureAnalyzer:
             # Get the appropriate client and generate analysis
             if provider == "Google GenAI":
                 if not self.google_client.is_available():
-                    yield "**Error:** Google GenAI client not available. Please check your API key."
+                    yield sanitize_markdown_output("**Error:** Google GenAI client not available. Please check your API key.")
                     return
                 response_text = self.google_client.generate_analysis(markdown_plan, model_choice)
             elif provider == "LM Studio (Local)":
@@ -57,23 +106,23 @@ class ArchitectureAnalyzer:
                     self.lm_studio_client.update_host(lm_studio_host)
                 response_text = self.lm_studio_client.generate_analysis(markdown_plan, model_choice)
             else:
-                yield f"**Error:** Unknown provider: {provider}"
+                yield sanitize_markdown_output(f"**Error:** Unknown provider: {provider}")
                 return
 
             # Parse and format the response
             analysis_json = parse_analysis_response(response_text)
             formatted_output = format_analysis_response(analysis_json, model_choice)
-            yield formatted_output
+            yield sanitize_markdown_output(formatted_output)
 
         except json.JSONDecodeError:
             gr.Error("The AI returned an invalid JSON response. This can happen with complex inputs.")
-            yield f"**Error:** The AI response could not be parsed as JSON. Please try a slightly different input or a more powerful model.\n\n**Raw Response:**\n```\n{response_text}\n```"
+            yield sanitize_markdown_output(f"**Error:** The AI response could not be parsed as JSON. Please try a slightly different input or a more powerful model.\n\n**Raw Response:**\n```\n{response_text}\n```")
         except LLMClientError as e:
             gr.Error(f"LLM Client error: {str(e)}")
-            yield f"**Error:** {str(e)}"
+            yield sanitize_markdown_output(f"**Error:** {str(e)}")
         except Exception as e:
             gr.Error(f"An unexpected error occurred: {str(e)}")
-            yield f"**Error:** An unexpected error occurred: {str(e)}"
+            yield sanitize_markdown_output(f"**Error:** An unexpected error occurred: {str(e)}")
     
     def test_lm_studio_connection(self, host: str) -> str:
         """Test connection to LM Studio."""
@@ -82,7 +131,7 @@ class ArchitectureAnalyzer:
             self.lm_studio_client.update_host(host)
         
         _, message = self.lm_studio_client.test_connection()
-        return message
+        return sanitize_markdown_output(message)
     
     def get_lm_studio_models(self, host: str = DEFAULT_LM_STUDIO_HOST) -> List[str]:
         """Get available models from LM Studio."""

@@ -2,6 +2,7 @@ import os
 import json
 import gradio as gr
 import requests
+import bleach
 from typing import Dict, Any, List
 from dotenv import load_dotenv
 from google import genai
@@ -68,6 +69,55 @@ Provide your analysis in this exact JSON format:
 
 Be specific, practical, and focus on actionable recommendations. Consider real-world constraints and trade-offs.
 """
+
+# --- Security: Markdown Sanitization ---
+
+def sanitize_markdown_output(content: str) -> str:
+    """
+    Sanitize markdown content to prevent XSS attacks.
+    
+    This function removes potentially dangerous HTML tags and attributes
+    while preserving safe markdown formatting.
+    
+    Args:
+        content (str): The raw markdown content from LLM
+        
+    Returns:
+        str: Sanitized markdown content safe for rendering
+    """
+    # Define allowed HTML tags for markdown formatting
+    allowed_tags = [
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',  # Headers
+        'p', 'br', 'hr',                       # Paragraphs and breaks
+        'strong', 'b', 'em', 'i', 'u', 's',   # Text formatting
+        'ul', 'ol', 'li',                      # Lists
+        'blockquote', 'pre', 'code',           # Code and quotes
+        'table', 'thead', 'tbody', 'tr', 'th', 'td',  # Tables
+        'a',                                   # Links (with limited attributes)
+    ]
+    
+    # Define allowed attributes for specific tags
+    allowed_attributes = {
+        'a': ['href', 'title'],
+        'code': ['class'],  # For syntax highlighting
+        'pre': ['class'],   # For code blocks
+    }
+    
+    # Sanitize the content
+    cleaned_content = bleach.clean(
+        content,
+        tags=allowed_tags,
+        attributes=allowed_attributes,
+        strip=True  # Remove disallowed tags completely
+    )
+    
+    # Additional protection: ensure URLs in links are safe
+    cleaned_content = bleach.linkify(
+        cleaned_content,
+        callbacks=[bleach.callbacks.nofollow]  # Add rel="nofollow" to external links
+    )
+    
+    return cleaned_content
 
 # --- Helper Functions for Different Providers ---
 
@@ -179,7 +229,7 @@ def analyze_architecture(markdown_plan: str, model_choice: str, provider: str, l
         return "Please enter an architecture plan to analyze."
 
     # Show a loading message in the UI immediately
-    yield f"🤖 Analyzing your plan with {model_choice} via {provider}..."
+    yield sanitize_markdown_output(f"🤖 Analyzing your plan with {model_choice} via {provider}...")
 
     response_text = ""  # Initialize to avoid unbound variable issues
     
@@ -190,11 +240,13 @@ def analyze_architecture(markdown_plan: str, model_choice: str, provider: str, l
         elif provider == "LM Studio (Local)":
             response_text = call_lm_studio(markdown_plan, model_choice, lm_studio_host)
         else:
-            yield f"**Error:** Unknown provider: {provider}"
+            error_msg = f"**Error:** Unknown provider: {provider}"
+            yield sanitize_markdown_output(error_msg)
             return
         
         if not response_text:
-            yield "**Error:** Empty response from AI model. Please try again."
+            error_msg = "**Error:** Empty response from AI model. Please try again."
+            yield sanitize_markdown_output(error_msg)
             return
             
         analysis_json = json.loads(response_text)
@@ -224,14 +276,19 @@ def analyze_architecture(markdown_plan: str, model_choice: str, provider: str, l
             for point in analysis_json['actionableKeyPoints']:
                 output_md += f"- {point}\n"
         
-        yield output_md
+        # Sanitize the output Markdown to prevent XSS
+        safe_output_md = sanitize_markdown_output(output_md)
+        
+        yield safe_output_md
 
     except json.JSONDecodeError:
         gr.Error("The AI returned an invalid JSON response. This can happen with complex inputs.")
-        yield f"**Error:** The AI response could not be parsed as JSON. Please try a slightly different input or a more powerful model.\n\n**Raw Response:**\n```\n{response_text}\n```"
+        error_msg = f"**Error:** The AI response could not be parsed as JSON. Please try a slightly different input or a more powerful model.\n\n**Raw Response:**\n```\n{response_text}\n```"
+        yield sanitize_markdown_output(error_msg)
     except Exception as e:
         gr.Error(f"An unexpected error occurred: {str(e)}")
-        yield f"An unexpected error occurred: {str(e)}"
+        error_msg = f"An unexpected error occurred: {str(e)}"
+        yield sanitize_markdown_output(error_msg)
 
 # --- 3. Example Plan for the UI ---
 EXAMPLE_PLAN = """
